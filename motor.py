@@ -34,63 +34,76 @@ STEPS_PER_REVOLUTION = int(360 / DEG_PER_STEP)
 
 # Define sequence for 28BYJ-48 stepper motor
 # Try from https://components101.com/motors/28byj-48-stepper-motor
-seq = [
-    [0, 1, 1, 1],
+#   [O, Y, P, B]
+se8 = [
     [0, 0, 1, 1],
-    [1, 0, 1, 1],
-    [1, 0, 0, 1],
-    [1, 1, 0, 1],
+    [0, 0, 1, 0],
+    [0, 1, 1, 0],
+    [0, 1, 0, 0],
     [1, 1, 0, 0],
-    [1, 1, 1, 0],
-    [0, 1, 1, 0]
+    [1, 0, 0, 0],
+    [1, 0, 0, 1],
+    [0, 0, 0, 1]
+]
+#   [O, Y, P, B]
+se4 = [
+    [0, 0, 1, 1],
+    [0, 1, 1, 0],
+    [1, 1, 0, 0],
+    [1, 0, 0, 1]
 ]
 
 # Function to rotate the stepper motor one step
 def step(delay, step_sequence):
-    for i in range(4):
-        GPIO.output(IN1, step_sequence[i])
-        GPIO.output(IN2, step_sequence[i])
-        GPIO.output(IN3, step_sequence[i])
-        GPIO.output(IN4, step_sequence[i])
+    GPIO.output(IN1, step_sequence[0])
+    GPIO.output(IN2, step_sequence[1])
+    GPIO.output(IN3, step_sequence[2])
+    GPIO.output(IN4, step_sequence[3])
     time.sleep(delay)
+    GPIO.output(IN1, 0)
+    GPIO.output(IN2, 0)
+    GPIO.output(IN3, 0)
+    GPIO.output(IN4, 0)
 
 # Function to move the stepper motor one step forward
 def step_forward(delay, steps):
     for _ in range(steps):
-        step(delay, seq[0])
-        step(delay, seq[1])
-        step(delay, seq[2])
-        step(delay, seq[3])
-        step(delay, seq[4])
-        step(delay, seq[5])
-        step(delay, seq[6])
-        step(delay, seq[7])
+        step(delay, se4[0])
+        step(delay, se4[1])
+        step(delay, se4[2])
+        step(delay, se4[3])
+    #    step(delay, seq[4])
+    #    step(delay, seq[5])
+    #    step(delay, seq[6])
+    #    step(delay, seq[7])
 
 # Function to move the stepper motor one step backward
 def step_backward(delay, steps):
     for _ in range(steps):
-        step(delay, seq[7])
-        step(delay, seq[6])
-        step(delay, seq[5])
-        step(delay, seq[4])
-        step(delay, seq[3])
-        step(delay, seq[2])
-        step(delay, seq[1])
-        step(delay, seq[0])
+    #    step(delay, seq[7])
+    #    step(delay, seq[6])
+    #    step(delay, seq[5])
+    #    step(delay, seq[4])
+        step(delay, se4[3])
+        step(delay, se4[2])
+        step(delay, se4[1])
+        step(delay, se4[0])
 
 try:
     # time the step command sequence is applied.
     delay = 0.005
+    # delay = 1
 
-    print(seq)
+    print(se4)
     print(STEPS_PER_REVOLUTION)
 
     while True:
         # Rotate one revolution forward (clockwise)
         step_forward(delay, STEPS_PER_REVOLUTION)
+        # step_backward(delay, STEPS_PER_REVOLUTION)
 
         # Pause for 2 seconds
-        time.sleep(1)
+        time.sleep(2)
 
         # Rotate one revolution backward (anticlockwise)
         # step_backward(delay, STEPS_PER_REVOLUTION)
