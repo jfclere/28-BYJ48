@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# forward backlash in steps (something like 3 minutes)
+BACKLASH = 25
+
 import time, datetime, motor
 class hourmin:
   def __init__(self): 
@@ -8,16 +11,37 @@ class hourmin:
 
 class motortime:
    def __init__(self):
-     # reset to 00:00
-     #motor.reset()
-     self.current = hourmin()
-     self.current.hour = 0;
-     self.current.minu = 0;
+     # reset to 00:00 if we don't have save
+     self.step = self.restore()
+     if self.step < 0:
+       motor.reset()
+       self.step = 0;
+       self.store(0);
+       # backlash to get 00:00
+       motor.step_forward8(0.005, BACKLASH)
+
+   def store(self, step):
+     file = open('step.txt', 'w')
+     string = str(step)
+     file.write(string)
+     file.close()
+
+   def restore(self):
+     try:
+       file = open('step.txt', 'r')
+       content = file.read()
+       print(content)
+       file.close()
+       return int(content)
+     except Exception as err:
+       print("OS error:", err)
+       print("restore failed resetting to 00:00")
+       return -1
 
    def hourminu(self):
      now = datetime.datetime.now()
-     print(now.time())
-     hour = now.strftime('%H')
+     # print(now.time())
+     hour = now.strftime('%I')
      minu = now.strftime('%M')
      t = hourmin()
      t.hour = int(hour)
@@ -29,33 +53,42 @@ class motortime:
      return
 
    def display(self, val):
-     old = self.current.hour * 60
-     old = old + self.current.minu
-     new = val.hour * 60
-     new = new + val.minu
-     mysteps = motor.STEPS_PER_REVOLUTION
-     mysteps = mysteps // 60
-     if (new == old):
+
+     # At 00:00 make we go forward... and backward to be a 00:00
+     # 6108 corresponds to 11:58
+     if val.hour == 0 and val.minu == 0 and self.step >= 6108:
+       # move 5 minutes forward and 10 backward (impossible mechanically)
+       motor.step_forward8(0.005, 42)
+       motor.step_backward8(0.005, 84)
+       self.step = 0;
+       self.store(0);
+       # backlash to get 00:00
+       motor.step_forward8(0.005, BACKLASH)
        return
-     if (new>old):
-       mysteps = (new - old) * mysteps
-       if val.minu == 0:
-         mysteps = mysteps + 2
-       else:
-         if val.minu % 2 == 0:
-           mysteps = mysteps + 1
+
+     # calculate the step we need
+     mysteps = val.hour * motor.STEPS_PER_REVOLUTION
+     # Calculate the minutes we 512 step per hour
+     myminu = val.minu // 2
+     rest = val.minu % 2
+     mysteps = mysteps + myminu * 8 + myminu * 9 + rest * 8
+     mysteps = mysteps - self.step 
+     if mysteps == 0:
+       return
+     if mysteps > 0:
        print(mysteps)
+       print(val.hour, val.minu)
        motor.step_forward8(0.005, mysteps)
      else:
-       mysteps = (old - new) * mysteps
-       if val.minu == 0:
-         mysteps = mysteps + 2
-       else:
-         if val.minu % 2 == 0:
-           mysteps = mysteps + 1
-       motor.step_backward8(0.005, mysteps)
-     self.current.hour = val.hour
-     self.current.minu = val.minu
+       print(mysteps)
+       print(val.hour, val.minu)
+       motor.step_backward8(0.005, -mysteps)
+     self.step = self.step + mysteps
+     if self.step == motor.STEPS_PER_REVOLUTION * 12:
+       self.step = 0
+     if self.step > motor.STEPS_PER_REVOLUTION * 12:
+        printf(self.step)
+     self.store(self.step)
 
 if __name__ == "__main__":
 

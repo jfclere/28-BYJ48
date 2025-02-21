@@ -118,6 +118,8 @@ if __name__ == "__main__":
 
         print(se4)
         print(STEPS_PER_REVOLUTION)
+        step_forward8(delay, 1)
+        exit(0)
 
         while True:
             # Rotate one revolution forward (clockwise)
