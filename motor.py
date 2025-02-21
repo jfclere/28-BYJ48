@@ -105,31 +105,37 @@ def step_backward8(delay, steps):
         step(delay, se8[2])
         step(delay, se8[1])
 
-try:
-    # time the step command sequence is applied.
-    delay = 0.005
-    # delay = 1
-
-    print(se4)
-    print(STEPS_PER_REVOLUTION)
-
-    while True:
-        # Rotate one revolution forward (clockwise)
-        step_forward8(delay, STEPS_PER_REVOLUTION)
-        # step_backward(delay, STEPS_PER_REVOLUTION)
-
-        # Pause for 2 seconds
-        time.sleep(2)
-
-        # Rotate one revolution backward (anticlockwise)
+def reset():
+     delay = 0.005
+     for _ in range(12):
         step_backward8(delay, STEPS_PER_REVOLUTION)
 
-        # Pause for 2 seconds
-        # time.sleep(2)
+if __name__ == "__main__":
+    try:
+        # time the step command sequence is applied.
+        delay = 0.005
+        # delay = 1
 
-except KeyboardInterrupt:
-    print("\nExiting the script.")
+        print(se4)
+        print(STEPS_PER_REVOLUTION)
 
-finally:
-    # Clean up GPIO settings
-    GPIO.cleanup()
+        while True:
+            # Rotate one revolution forward (clockwise)
+            step_forward8(delay, STEPS_PER_REVOLUTION)
+            # step_backward(delay, STEPS_PER_REVOLUTION)
+
+            # Pause for 2 seconds
+            time.sleep(2)
+
+            # Rotate one revolution backward (anticlockwise)
+            step_backward8(delay, STEPS_PER_REVOLUTION)
+
+            # Pause for 2 seconds
+            # time.sleep(2)
+
+    except KeyboardInterrupt:
+        print("\nExiting the script.")
+
+    finally:
+        # Clean up GPIO settings
+        GPIO.cleanup()
