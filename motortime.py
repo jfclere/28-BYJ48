@@ -45,6 +45,8 @@ class motortime:
      minu = now.strftime('%M')
      t = hourmin()
      t.hour = int(hour)
+     if t.hour >= 12:
+       t.hour = t.hour % 12
      t.minu = int(minu)
      return t
 
@@ -64,6 +66,8 @@ class motortime:
        self.store(0);
        # backlash to get 00:00
        motor.step_forward8(0.005, BACKLASH)
+       return
+     if val.hour == 0 and val.minu == 0 and self.step == 0:
        return
 
      # calculate the step we need
@@ -87,7 +91,7 @@ class motortime:
      if self.step == motor.STEPS_PER_REVOLUTION * 12:
        self.step = 0
      if self.step > motor.STEPS_PER_REVOLUTION * 12:
-        printf(self.step)
+        print(self.step)
      self.store(self.step)
 
 if __name__ == "__main__":
