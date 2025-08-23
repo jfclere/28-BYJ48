@@ -67,57 +67,57 @@ class motor():
 
 
 # Function to rotate the stepper motor one step
-  def step(delay, step_sequence):
-    GPIO.output(IN1, step_sequence[0])
-    GPIO.output(IN2, step_sequence[1])
-    GPIO.output(IN3, step_sequence[2])
-    GPIO.output(IN4, step_sequence[3])
+  def step(self, delay, step_sequence):
+    GPIO.output(self.IN1, step_sequence[0])
+    GPIO.output(self.IN2, step_sequence[1])
+    GPIO.output(self.IN3, step_sequence[2])
+    GPIO.output(self.IN4, step_sequence[3])
     time.sleep(delay)
-    GPIO.output(IN1, 0)
-    GPIO.output(IN2, 0)
-    GPIO.output(IN3, 0)
-    GPIO.output(IN4, 0)
+    GPIO.output(self.IN1, 0)
+    GPIO.output(self.IN2, 0)
+    GPIO.output(self.IN3, 0)
+    GPIO.output(self.IN4, 0)
 
 # Functions to move the stepper motor one step forward
-  def step_forward(delay, steps):
+  def step_forward(self, delay, steps):
     for _ in range(steps):
-        step(delay, se4[0])
-        step(delay, se4[1])
-        step(delay, se4[2])
-        step(delay, se4[3])
+        self.step(delay, se4[0])
+        self.step(delay, se4[1])
+        self.step(delay, se4[2])
+        self.step(delay, se4[3])
 
-  def step_forward8(delay, steps):
+  def step_forward8(self, delay, steps):
     for _ in range(steps):
-        step(delay, se8[0])
-        step(delay, se8[1])
-        step(delay, se8[2])
-        step(delay, se8[3])
-        step(delay, se8[4])
-        step(delay, se8[5])
-        step(delay, se8[6])
-        step(delay, se8[7])
+        self.step(delay, se8[0])
+        self.step(delay, se8[1])
+        self.step(delay, se8[2])
+        self.step(delay, se8[3])
+        self.step(delay, se8[4])
+        self.step(delay, se8[5])
+        self.step(delay, se8[6])
+        self.step(delay, se8[7])
 
 # Functions to move the stepper motor one step backward
-  def step_backward(delay, steps):
+  def step_backward(self, delay, steps):
     for _ in range(steps):
-        step(delay, se4[3])
-        step(delay, se4[2])
-        step(delay, se4[1])
-        step(delay, se4[0])
-  def step_backward8(delay, steps):
+        self.step(delay, se4[3])
+        self.step(delay, se4[2])
+        self.step(delay, se4[1])
+        self.step(delay, se4[0])
+  def step_backward8(self, delay, steps):
     for _ in range(steps):
-        step(delay, se8[7])
-        step(delay, se8[6])
-        step(delay, se8[5])
-        step(delay, se8[4])
-        step(delay, se8[3])
-        step(delay, se8[2])
-        step(delay, se8[1])
+        self.step(delay, se8[7])
+        self.step(delay, se8[6])
+        self.step(delay, se8[5])
+        self.step(delay, se8[4])
+        self.step(delay, se8[3])
+        self.step(delay, se8[2])
+        self.step(delay, se8[1])
 
-  def reset():
+  def reset(self, ):
      delay = 0.005
      for _ in range(12):
-        step_backward8(delay, STEPS_PER_REVOLUTION)
+        self.step_backward8(delay, STEPS_PER_REVOLUTION)
 
 if __name__ == "__main__":
     try:
@@ -125,7 +125,7 @@ if __name__ == "__main__":
         delay = 0.005
         # delay = 1
 
-        mymotor = motor(IN1 = 23, IN2 = 24, IN3 = 25, IN4 = 8)
+        mymotor = motor(IN1 = 26, IN2 = 19, IN3 = 13, IN4 = 6)
         print(se4)
         print(STEPS_PER_REVOLUTION)
         mymotor.step_forward8(delay, 1)
