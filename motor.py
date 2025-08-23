@@ -125,21 +125,27 @@ if __name__ == "__main__":
         delay = 0.005
         # delay = 1
 
-        mymotor = motor(IN1 = 26, IN2 = 19, IN3 = 13, IN4 = 6)
+        motor1 = motor(IN1 = 26, IN2 = 19, IN3 = 13, IN4 = 6)
+        motor2 = motor(IN1 = 1,  IN2 = 7,  IN3 = 8, IN4 = 25)
         print(se4)
         print(STEPS_PER_REVOLUTION)
-        mymotor.step_forward8(delay, 1)
+        motor1.step_forward8(delay, 1)
+        motor2.step_forward8(delay, 1)
 
         while True:
             # Rotate one revolution forward (clockwise)
-            mymotor.step_forward8(delay, STEPS_PER_REVOLUTION)
+            for _ in range(STEPS_PER_REVOLUTION):
+                motor1.step_forward8(delay, 1)
+                motor2.step_forward8(delay, 1)
             # step_backward(delay, STEPS_PER_REVOLUTION)
 
             # Pause for 2 seconds
             time.sleep(2)
 
             # Rotate one revolution backward (anticlockwise)
-            mymotor.step_backward8(delay, STEPS_PER_REVOLUTION)
+            for _ in range(STEPS_PER_REVOLUTION):
+                motor1.step_backward8(delay, 1)
+                motor2.step_backward8(delay, 1)
 
             # Pause for 2 seconds
             # time.sleep(2)
