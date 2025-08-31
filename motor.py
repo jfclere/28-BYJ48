@@ -8,6 +8,7 @@ https://newbiely.com/tutorials/raspberry-pi/raspberry-pi-28byj-48-stepper-motor-
 
 import RPi.GPIO as GPIO
 import time
+import sys
 
 # Define GPIO pins for ULN2003 driver
 # Red is a +5V always...
@@ -120,39 +121,43 @@ class motor():
         self.step_backward8(delay, STEPS_PER_REVOLUTION)
 
 if __name__ == "__main__":
-    try:
-        # time the step command sequence is applied.
-        delay = 0.005
-        # delay = 1
-
-        motor1 = motor(IN1 = 26, IN2 = 19, IN3 = 13, IN4 = 6)
-        motor2 = motor(IN1 = 1,  IN2 = 7,  IN3 = 8, IN4 = 25)
-        print(se4)
-        print(STEPS_PER_REVOLUTION)
-        motor1.step_forward8(delay, 1)
-        motor2.step_forward8(delay, 1)
-
-        while True:
-            # Rotate one revolution forward (clockwise)
-            for _ in range(STEPS_PER_REVOLUTION):
-                motor1.step_forward8(delay, 1)
-                motor2.step_forward8(delay, 1)
-            # step_backward(delay, STEPS_PER_REVOLUTION)
-
-            # Pause for 2 seconds
-            time.sleep(2)
-
-            # Rotate one revolution backward (anticlockwise)
-            for _ in range(STEPS_PER_REVOLUTION):
-                motor1.step_backward8(delay, 1)
-                motor2.step_backward8(delay, 1)
-
-            # Pause for 2 seconds
-            # time.sleep(2)
-
-    except KeyboardInterrupt:
-        print("\nExiting the script.")
-
-    finally:
-        # Clean up GPIO settings
-        GPIO.cleanup()
+    n = 0
+    f = True
+    l = False
+    r = False
+    if len(sys.argv) == 2:
+        n = int(sys.argv[1])
+    if len(sys.argv) == 3:
+        n = int(sys.argv[1])
+        if sys.argv[2] == "r":
+           r = True
+        if sys.argv[2] == "l":
+           l = True
+    if n == 0:
+        sys.exit(0)
+    if n < 0:
+        n = -n
+        f = False
+    # time the step command sequence is applied.
+    delay = 0.005
+    motor1 = motor(IN1 = 26, IN2 = 19, IN3 = 13, IN4 = 6)
+    motor2 = motor(IN1 = 1,  IN2 = 7,  IN3 = 8, IN4 = 25)
+    #    print(se4)
+    #    print(STEPS_PER_REVOLUTION)
+    for _ in range(n):
+        if r == True:
+            motor1.step_forward8(delay, 1)
+            motor2.step_backward8(delay, 1)
+            continue
+        if l == True:
+            motor1.step_backward8(delay, 1)
+            motor2.step_forward8(delay, 1)
+        if f == True:
+            motor1.step_forward8(delay, 1)
+            motor2.step_forward8(delay, 1)
+            continue
+        else:
+            motor1.step_backward8(delay, 1)
+            motor2.step_backward8(delay, 1)
+    # Clean up GPIO settings
+    GPIO.cleanup()
